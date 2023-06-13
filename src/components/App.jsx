@@ -1,44 +1,44 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
 import { Statistics } from './Statistics/Statistics';
 import { Notification } from './Notification/Notification';
 import { Section } from './Section/Section';
 import {Container} from './App.styled'
 
-export class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+export function App() {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+
+  const onButtonClick = key => {
+    if (key === 'good') {
+      setGood(prevGood => prevGood + 1);
+    } else if (key === 'neutral') {
+      setNeutral(prevNeutral => prevNeutral + 1);
+    } else if (key === 'bad') {
+      setBad(prevBad => prevBad + 1);
+    }
   };
 
-  onButtonClick = key => {
-    this.setState(prevState => ({ [key]: prevState[key] + 1 }));
+  const countTotalFeedback = () => {
+        return good + neutral + bad;
   };
 
-  countTotalFeedback = () => {
-    const { good, neutral, bad } = this.state;
-    return good + neutral + bad;
-  };
-
-  countPositiveFeedbackPercentage = () => {
-    const { good } = this.state;
-    const total = this.countTotalFeedback();
+  const countPositiveFeedbackPercentage = () => {
+    const total = countTotalFeedback();
     return Math.round((good / total) * 100) || 0;
   };
 
-  render() {
-    const { good, neutral, bad } = this.state;
-    const keys = Object.keys(this.state);
-    const totalFeedback = this.countTotalFeedback();
-    const positiveFeedbackPercentage = this.countPositiveFeedbackPercentage();
+    const keys = ['good', 'neutral', 'bad'];
+    const totalFeedback = countTotalFeedback();
+    const positiveFeedbackPercentage = countPositiveFeedbackPercentage();
 
     return (
       <Container>
         <Section title="Please leave feedback">
           <FeedbackOptions
             options={keys}
-            onLeaveFeedback={this.onButtonClick}
+            onLeaveFeedback={onButtonClick}
           />
         </Section>
 
@@ -57,5 +57,5 @@ export class App extends Component {
         </Section>
       </Container>
     );
-  }
+
 }
